@@ -1,0 +1,24 @@
+{
+  "name": "pretty",
+  "version": "1.0.0",
+  "description": "Pretty Simple Test",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Op3ra/prettysimple.git"
+  },
+  "author": "Clement Cousin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Op3ra/prettysimple/issues"
+  },
+  "homepage": "https://github.com/Op3ra/prettysimple#readme",
+  "dependencies": {
+    "hapi": "^13.2.2",
+    "hapi-postgres-connection": "^2.1.1",
+    "joi": "^8.0.5"
+  }
+}
