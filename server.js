@@ -1,11 +1,7 @@
 'use strict';
 
-function validateString(str)
-{
-    return true;
-}
-
 const Hapi = require('hapi');
+const Joi = require('joi');
 
 // Create a server with a host and port
 const server = new Hapi.Server();
@@ -31,11 +27,14 @@ server.route({
         const to = encodeURIComponent(request.payload.to);
         reply('From: ' + from + ' <> To: ' + to);
     },
-    validate: {
-        payload: {
-            from: validateString(),
-            to: validateString()
-         }
+    config: {
+        validate: {
+            payload: {
+                from: Joi.string().guid().required(),
+                to: Joi.string().guid().required(),
+                action: Joi.any().valid('claim', 'give').required()
+            }
+        }
     }
 });
 
