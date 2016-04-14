@@ -17,9 +17,7 @@
   },
   "homepage": "https://github.com/Op3ra/prettysimple#readme",
   "dependencies": {
-    "JSON": "^1.0.0",
     "env2": "^2.0.7",
-    "fs": "0.0.2",
     "hapi": "^13.2.2",
     "hapi-postgres-connection": "^2.1.1",
     "joi": "^8.0.5"
