@@ -8,9 +8,8 @@ require('env2')('config.env');
 function handle_gift(request, reply) {
     const from = encodeURIComponent(request.payload.from);
     const to = encodeURIComponent(request.payload.to);
-    var gift = new Gift.Gift(from, to);
-    gift.give();
-    reply('From: ' + from + ' <> To: ' + to);
+    var gift = new Gift.Gift(from, to, request.pg.client);
+    gift.give(reply);
 }
 
 function list_gifts(request, reply) {
@@ -55,9 +54,7 @@ server.route({
     }
 });
 
-// Start the server
 server.start((err) => {
-
     if (err) {
         throw err;
     }
