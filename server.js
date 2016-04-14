@@ -2,7 +2,21 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
+const Gift = require('./gift.js')
 require('env2')('config.env');
+
+function handle_gift(request, reply) {
+    const from = encodeURIComponent(request.payload.from);
+    const to = encodeURIComponent(request.payload.to);
+    var gift = new Gift.Gift(from, to);
+    gift.give();
+    reply('From: ' + from + ' <> To: ' + to);
+}
+
+function list_gifts(request, reply) {
+    const user = request.params.user ? encodeURIComponent(request.params.user) : 'all';
+    reply('list: ' + user);
+}
 
 // Create a server with a host and port
 const server = new Hapi.Server();
@@ -23,20 +37,13 @@ server.register({
 server.route({
     method: 'GET',
     path: '/gift/{user?}',
-    handler: function (request, reply) {
-        const user = request.params.user ? encodeURIComponent(request.params.user) : 'all';
-        reply('list: ' + user);
-    }
+    handler: list_gifts
 });
 
 server.route({
     method: 'POST',
     path: '/gift',
-    handler: function (request, reply) {
-        const from = encodeURIComponent(request.payload.from);
-        const to = encodeURIComponent(request.payload.to);
-        reply('From: ' + from + ' <> To: ' + to);
-    },
+    handler: handle_gift,
     config: {
         validate: {
             payload: {
