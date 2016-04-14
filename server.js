@@ -2,12 +2,22 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
+require('env2')('config.env');
 
 // Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({ 
     host: 'localhost', 
     port: 8000 
+});
+
+server.register({
+    register: require('hapi-postgres-connection')}
+    , function (err) {
+        if (err)
+            console.log('Error while loading database connector : ' + err);
+        else
+            console.log('Database connector loaded succesfully.');
 });
 
 server.route({
@@ -46,3 +56,4 @@ server.start((err) => {
     }
     console.log('Server running at:', server.info.uri);
 });
+
