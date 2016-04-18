@@ -8,7 +8,10 @@ function handle_gift(request, reply) {
     const from = encodeURIComponent(request.payload.from);
     const to = encodeURIComponent(request.payload.to);
     var gift = new Gift.Gift(from, to);
-    gift.give(reply);
+    if (request.payload.action == 'give')
+        gift.give(reply);
+    else if (request.payload.action == 'claim')
+        gift.claim(reply);
 }
 
 function list_gifts(request, reply) {
