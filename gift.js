@@ -1,29 +1,38 @@
 'use strict';
 
-var Gift = function(from, to, db_handle) {
+const DBHandle = require('./database.js');
+var db = new DBHandle.DBHandle();
+
+var Gift = function(from, to) {
     this.from = from;
     this.to = to;
-    this.dbh = db_handle;
-    this.date = Date.now(); 
 };
 
 Gift.prototype.give = function(reply) {
-    var query_txt = 'SELECT expiration FROM gifts WHERE id_from = \'' + this.from + '\' AND id_to = \'' + this.to + '\'';
-    console.log(query_txt);
-    this.dbh.query(query_txt, function(err, result) {
-        if (err)
-        {
-            console.log(err);
-            reply('An error occured while sending gift: ' + err);
+    var max_expiration = new Date();
+    max_expiration.setDate(max_expiration.getDate() + 7);
+    var self = this;
+    db.Gifts().findAll({
+        attributes: ['expiration'],
+        where: {
+            expiration: {
+                $lte: max_expiration
+            },
+            senderId: self.from,
+            receiverId: self.to
         }
-        console.log(result);
-        if (result.rowCount == 0) // No waiting gift. Proceed.
-        {
-            reply('New gift sent. It will expire on ' + this.date);
+    }).then(function(result) {
+        if (! result.expiration) { // No existing gift, we create one
+            db.Gifts().create({
+                expiration: max_expiration,
+                senderId: self.from,
+                receiverId: self.to
+            }).then(function (insert) {
+                reply(insert);
+            });
         }
-        else
-        {
-            reply('There is already a pending gift. It will expire on ' + this.date);
+        else {
+            reply('FIXME');
         }
     });
 }
@@ -34,10 +43,5 @@ Gift.prototype.claim = function() {
     console.log(this.date);
 }
 
-Gift.prototype.get_date = function() {
-    return this.date;
-}
-
 module.exports.Gift = Gift;
 var exports = module.exports;
-

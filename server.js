@@ -3,12 +3,11 @@
 const Hapi = require('hapi');
 const Joi = require('joi');
 const Gift = require('./gift.js')
-require('env2')('config.env');
 
 function handle_gift(request, reply) {
     const from = encodeURIComponent(request.payload.from);
     const to = encodeURIComponent(request.payload.to);
-    var gift = new Gift.Gift(from, to, request.pg.client);
+    var gift = new Gift.Gift(from, to);
     gift.give(reply);
 }
 
@@ -19,18 +18,9 @@ function list_gifts(request, reply) {
 
 // Create a server with a host and port
 const server = new Hapi.Server();
-server.connection({ 
-    host: 'localhost', 
-    port: 8000 
-});
-
-server.register({
-    register: require('hapi-postgres-connection')}
-    , function (err) {
-        if (err)
-            console.log('Error while loading database connector : ' + err);
-        else
-            console.log('Database connector loaded succesfully.');
+server.connection({
+    host: 'localhost',
+    port: 8000
 });
 
 server.route({
@@ -60,4 +50,3 @@ server.start((err) => {
     }
     console.log('Server running at:', server.info.uri);
 });
-

@@ -1,72 +1,29 @@
--- Table creation
-
-create table users (
-    id          uuid NOT NULL,
-    name        varchar(128),
-    PRIMARY KEY(id)
-);
-
-create table cities (
-    id          uuid,
-    name        varchar(128),
-    PRIMARY KEY(id)
-);
-
-create table friends (
-    id_a        uuid,
-    id_b        uuid,
-    PRIMARY KEY(id_a, id_b)
-);
-
-create table mayors (
-    id_user     uuid,
-    id_city     uuid,
-    PRIMARY KEY(id_user, id_city)
-);
-
-create table gifts (
-    id_from     uuid,
-    id_to       uuid,
-    expiration  date,
-    PRIMARY KEY(id_from, id_to, expiration)
-);
-
-
 -- Populate tables
 
 -- Users
-insert into users(id, name) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', 'Alice');
-insert into users(id, name) values ('9997048b-36ab-465e-a265-84c1635fe610', 'Mary');
-insert into users(id, name) values ('bf823eca-da07-4417-825d-1bdd82f2aa15', 'George');
-insert into users(id, name) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'Henry');
-insert into users(id, name) values ('bb0e9186-00b2-4415-b803-99dc3e4909ea', 'Marge');
-insert into users(id, name) values ('3a711435-04a1-47ff-abfa-7d8fa3b5f8c4', 'Homer');
+insert into "user"(id, name) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', 'Alice');
+insert into "user"(id, name) values ('9997048b-36ab-465e-a265-84c1635fe610', 'Mary');
+insert into "user"(id, name) values ('bf823eca-da07-4417-825d-1bdd82f2aa15', 'George');
+insert into "user"(id, name) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'Henry');
+insert into "user"(id, name) values ('bb0e9186-00b2-4415-b803-99dc3e4909ea', 'Marge');
+insert into "user"(id, name) values ('3a711435-04a1-47ff-abfa-7d8fa3b5f8c4', 'Homer');
 
 -- Cities
-insert into cities(id, name) values ('c16b60d4-821e-4e8a-be9b-713185a26910', 'New York');
-insert into cities(id, name) values ('7e46ceec-68d6-42b3-befb-a7f126537f4f', 'Paris');
-insert into cities(id, name) values ('df81220f-ee83-4a8c-b842-e76e8cea9163', 'La Paz');
-insert into cities(id, name) values ('11ff9772-9a21-4ddb-a4ed-dd7ba6404df4', 'London');
-insert into cities(id, name) values ('aab5faa6-a3af-4348-b357-1e00cccbd70c', 'Dakar');
-insert into cities(id, name) values ('17c5a2e8-2e08-47c1-b026-295a3a24215c', 'Tokyo');
+-- insert into city(id, name, mayorId) values ('c16b60d4-821e-4e8a-be9b-713185a26910', 'New York', '3058955c-f535-4ebf-aca4-3153ce3d9bc7');
+-- insert into city(id, name) values ('7e46ceec-68d6-42b3-befb-a7f126537f4f', 'Paris', '9997048b-36ab-465e-a265-84c1635fe610');
+-- insert into city(id, name) values ('df81220f-ee83-4a8c-b842-e76e8cea9163', 'La Paz', 'bf823eca-da07-4417-825d-1bdd82f2aa15');
+-- insert into city(id, name) values ('11ff9772-9a21-4ddb-a4ed-dd7ba6404df4', 'London', '1c5335fc-286f-4e5b-accc-91bd0e569ba2');
+-- insert into city(id, name) values ('aab5faa6-a3af-4348-b357-1e00cccbd70c', 'Dakar', 'bb0e9186-00b2-4415-b803-99dc3e4909ea');
+-- insert into city(id, name) values ('17c5a2e8-2e08-47c1-b026-295a3a24215c', 'Tokyo', '3a711435-04a1-47ff-abfa-7d8fa3b5f8c4');
+--
 
 -- Friends
-insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', '9997048b-36ab-465e-a265-84c1635fe610'); -- Alice and Mary
-insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Alice and George
-insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', '1c5335fc-286f-4e5b-accc-91bd0e569ba2'); -- Alice and Henry
-insert into friends(id_a, id_b) values ('9997048b-36ab-465e-a265-84c1635fe610', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Mary and George
-insert into friends(id_a, id_b) values ('9997048b-36ab-465e-a265-84c1635fe610', 'bb0e9186-00b2-4415-b803-99dc3e4909ea'); -- Mary and Marge
-insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Henry and George
-insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'bb0e9186-00b2-4415-b803-99dc3e4909ea'); -- Henry and Marge
-insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', '3a711435-04a1-47ff-abfa-7d8fa3b5f8c4'); -- Henry and Homer
-insert into friends(id_a, id_b) values ('bb0e9186-00b2-4415-b803-99dc3e4909ea', '3a711435-04a1-47ff-abfa-7d8fa3b5f8c4'); -- Marge and Homer
-
--- Mayors
-insert into mayors(id_user, id_city) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', 'c16b60d4-821e-4e8a-be9b-713185a26910'); -- Alice  / New York
-insert into mayors(id_user, id_city) values ('9997048b-36ab-465e-a265-84c1635fe610', '7e46ceec-68d6-42b3-befb-a7f126537f4f'); -- Mary   / Paris
-insert into mayors(id_user, id_city) values ('bf823eca-da07-4417-825d-1bdd82f2aa15', 'df81220f-ee83-4a8c-b842-e76e8cea9163'); -- George / La Paz
-insert into mayors(id_user, id_city) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', '11ff9772-9a21-4ddb-a4ed-dd7ba6404df4'); -- Henry  / London
-insert into mayors(id_user, id_city) values ('bb0e9186-00b2-4415-b803-99dc3e4909ea', 'aab5faa6-a3af-4348-b357-1e00cccbd70c'); -- Marge  / Homer
-insert into mayors(id_user, id_city) values ('3a711435-04a1-47ff-abfa-7d8fa3b5f8c4', '17c5a2e8-2e08-47c1-b026-295a3a24215c'); -- Homer  / Tokyo
-
-
+-- insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', '9997048b-36ab-465e-a265-84c1635fe610'); -- Alice and Mary
+-- insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Alice and George
+-- insert into friends(id_a, id_b) values ('3058955c-f535-4ebf-aca4-3153ce3d9bc7', '1c5335fc-286f-4e5b-accc-91bd0e569ba2'); -- Alice and Henry
+-- insert into friends(id_a, id_b) values ('9997048b-36ab-465e-a265-84c1635fe610', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Mary and George
+-- insert into friends(id_a, id_b) values ('9997048b-36ab-465e-a265-84c1635fe610', 'bb0e9186-00b2-4415-b803-99dc3e4909ea'); -- Mary and Marge
+-- insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'bf823eca-da07-4417-825d-1bdd82f2aa15'); -- Henry and George
+-- insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', 'bb0e9186-00b2-4415-b803-99dc3e4909ea'); -- Henry and Marge
+-- insert into friends(id_a, id_b) values ('1c5335fc-286f-4e5b-accc-91bd0e569ba2', '3a711435-04a1-47ff-abfa-7d8fa3b5f8c4'); -- Henry and Homer
+-- insert into friends(id_a, id_b) values ('bb0e9186-00b2-4415-b803-99dc3e4909ea', '3a711435-04a1-47ff-abfa-7d8fa3b5f8c4'); -- Marge and Homer
