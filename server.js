@@ -34,7 +34,7 @@ server.route({
 
 server.route({
     method: 'POST',
-    path: '/gift',
+    path: '/gift',  // /claim et /give
     handler: handle_gift,
     config: {
         validate: {

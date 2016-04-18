@@ -78,6 +78,9 @@ Gift.prototype.claim = function(reply) {
         }
     });
 }
+//TODO add catch to handle error
+//TODO gatling
+//TODO test mochai chai sinon
 
 module.exports.Gift = Gift;
 var exports = module.exports;

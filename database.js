@@ -21,7 +21,6 @@ var User = sequelize.define('user', {
         freezeTableName: true
 });
 
-
 var City = sequelize.define('city', {
     id: {
         field: 'id',
@@ -80,3 +79,6 @@ DBHandle.prototype.Gifts = function() {
 
 module.exports.DBHandle = DBHandle;
 var exports = module.exports;
+
+//TODO : transferer requete
+
