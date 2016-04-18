@@ -12,27 +12,31 @@ Gift.prototype.give = function(reply) {
     var max_expiration = new Date();
     max_expiration.setDate(max_expiration.getDate() + 7);
     var self = this;
-    db.Gifts().findAll({
+    db.Gifts().findAndCountAll({
         attributes: ['expiration'],
         where: {
-            expiration: {
-                $lte: max_expiration
-            },
-            senderId: self.from,
-            receiverId: self.to
+            expiration: { $and: {
+                $lte: max_expiration,
+                $gt: new Date()
+            }},
+            sender_id: self.from,
+            receiver_id: self.to
         }
     }).then(function(result) {
-        if (! result.expiration) { // No existing gift, we create one
+        console.log(require('util').inspect(result, { depth: 1 }));
+        if (result.count == 0)
+        {
+            // No existing gift, we create one
             db.Gifts().create({
                 expiration: max_expiration,
-                senderId: self.from,
-                receiverId: self.to
-            }).then(function (insert) {
-                reply(insert);
+                sender_id: self.from,
+                receiver_id: self.to
+            }).then(function(insert_res) {
+                reply(insert_res.get({plain:true}));
             });
         }
-        else {
-            reply('FIXME');
+        else { // We return existing gift
+            reply('{"Existing gifts":' + JSON.stringify(result.rows) + '}');
         }
     });
 }

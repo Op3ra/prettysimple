@@ -20,11 +20,7 @@ var User = sequelize.define('user', {
         updatedAt: false,
         freezeTableName: true
 });
-User.belongsToMany(User, {as: 'id_a', through: 'friends'});
-User.belongsToMany(User, {as: 'id_b', through: 'friends'});
-User.sync().then(function () {
-    console.log('Synced Users table');
-});
+
 
 var City = sequelize.define('city', {
     id: {
@@ -43,9 +39,6 @@ var City = sequelize.define('city', {
         freezeTableName: true
 });
 City.belongsTo(User, {as: 'mayor', foreignKey: 'mayor_id'});
-City.sync().then(function () {
-    console.log('Synced City table');
-});
 
 var Gift = sequelize.define('gift', {
     id: {
@@ -65,8 +58,9 @@ var Gift = sequelize.define('gift', {
 });
 Gift.belongsTo(User, {as: 'sender', foreignKey: 'sender_id'});
 Gift.belongsTo(User, {as: 'receiver', foreignKey: 'receiver_id'});
-Gift.sync().then(function () {
-    console.log('Synced Gift table');
+
+sequelize.sync().then(function(){
+    console.log('Sync\'ed database.')
 });
 
 var DBHandle = function() {
@@ -82,6 +76,10 @@ DBHandle.prototype.Cities = function() {
 
 DBHandle.prototype.Gifts = function() {
     return Gift;
+}
+
+DBHandle.prototype.Friends = function() {
+    return Friend;
 }
 
 module.exports.DBHandle = DBHandle;
