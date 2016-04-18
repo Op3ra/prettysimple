@@ -78,9 +78,5 @@ DBHandle.prototype.Gifts = function() {
     return Gift;
 }
 
-DBHandle.prototype.Friends = function() {
-    return Friend;
-}
-
 module.exports.DBHandle = DBHandle;
 var exports = module.exports;
