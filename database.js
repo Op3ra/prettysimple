@@ -49,9 +49,13 @@ var Gift = sequelize.define('gift', {
     expiration: {
         field: 'expiration',
         type: Sequelize.DATE
+    },
+    claim_date: {
+        field: 'claim_date',
+        type: Sequelize.DATE
     }
 },{
-        createdAt: false,
+        createdAt: 'send_date', // use default ORM feature for insertion date
         updatedAt: false,
         freezeTableName: true
 });
@@ -65,9 +69,26 @@ sequelize.sync().then(function(){
 var DBHandle = function() {
 };
 
+DBHandle.prototype.findUnclaimedGifts = function (from, to, max_expiration) {
+    return Gift.findAndCountAll({
+        attributes: ['id', 'send_date', 'expiration', 'claim_date'],
+        order: 'send_date ASC', // Oldest gift first so we can work directly on index 0 of result
+        where: {
+            expiration: { $and: {
+                $lte: max_expiration,
+                $gt: new Date()
+            }},
+            sender_id: from,
+            receiver_id: to,
+            claim_date: null
+        }
+    });
+}
+
 DBHandle.prototype.findAllGifts = function (from, to, max_expiration) {
     return Gift.findAndCountAll({
-        attributes: ['id', 'expiration'],
+        attributes: ['id', 'send_date', 'expiration', 'claim_date'],
+        order: 'send_date DESC', // Latest gift first so we can work directly on index 0 of result
         where: {
             expiration: { $and: {
                 $lte: max_expiration,
@@ -87,19 +108,34 @@ DBHandle.prototype.createNewGift = function (from, to, expiration) {
     });
 }
 
-DBHandle.prototype.deleteGifts = function(from, to, max_expiration) {
-    return Gift.destroy({
-        where: {
-            expiration: { $and: {
-                $lt: max_expiration
-            }},
-            sender_id: from,
-            receiver_id: to
-        }
+DBHandle.prototype.claimGift = function(giftId) {
+    return Gift.update({
+        claim_date: new Date()
+    },{
+        fields: ['claim_date'],
+        where: { id: giftId }
+    });
+}
+
+DBHandle.prototype.listAllGifts = function() {
+    return Gift.findAll({
+        attributes: ['id', 'sender_id', 'receiver_id', 'expiration', 'claim_date']
+    });
+}
+
+DBHandle.prototype.listAllGiftsFrom = function(sender) {
+    return Gift.findAll({
+        attributes: ['id', 'sender_id', 'receiver_id', 'expiration', 'claim_date'],
+        where: { sender_id: sender }
+    });
+}
+
+DBHandle.prototype.listAllGiftsTo = function(receiver) {
+    return Gift.findAll({
+        attributes: ['id', 'sender_id', 'receiver_id', 'expiration', 'claim_date'],
+        where: { receiver_id: receiver }
     });
 }
 
 module.exports.DBHandle = DBHandle;
 var exports = module.exports;
-
-//TODO : transferer requete

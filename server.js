@@ -4,19 +4,30 @@ const Hapi = require('hapi');
 const Joi = require('joi');
 const Gift = require('./gift.js')
 
-// Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({
     host: 'localhost',
     port: 8000
 });
 
+// Listing
 server.route({
     method: 'GET',
-    path: '/gift/list/{user?}',
-    handler: Gift.list
+    path: '/gift/list/from/{user}',
+    handler: Gift.list_from
+});
+server.route({
+    method: 'GET',
+    path: '/gift/list/to/{user}',
+    handler: Gift.list_to
+});
+server.route({
+    method: 'GET',
+    path: '/gift/list',
+    handler: Gift.list_all
 });
 
+// Actions
 server.route({
     method: 'POST',
     path: '/gift/claim',
@@ -30,7 +41,6 @@ server.route({
         }
     }
 });
-
 server.route({
     method: 'POST',
     path: '/gift/give',
