@@ -65,20 +65,41 @@ sequelize.sync().then(function(){
 var DBHandle = function() {
 };
 
-DBHandle.prototype.Users = function() {
-    return User;
+DBHandle.prototype.findAllGifts = function (from, to, max_expiration) {
+    return Gift.findAndCountAll({
+        attributes: ['id', 'expiration'],
+        where: {
+            expiration: { $and: {
+                $lte: max_expiration,
+                $gt: new Date()
+            }},
+            sender_id: from,
+            receiver_id: to
+        }
+    });
 }
 
-DBHandle.prototype.Cities = function() {
-    return City;
+DBHandle.prototype.createNewGift = function (from, to, expiration) {
+    return Gift.create({
+        expiration: expiration,
+        sender_id: from,
+        receiver_id: to
+    });
 }
 
-DBHandle.prototype.Gifts = function() {
-    return Gift;
+DBHandle.prototype.deleteGifts = function(from, to, max_expiration) {
+    return Gift.destroy({
+        where: {
+            expiration: { $and: {
+                $lt: max_expiration
+            }},
+            sender_id: from,
+            receiver_id: to
+        }
+    });
 }
 
 module.exports.DBHandle = DBHandle;
 var exports = module.exports;
 
 //TODO : transferer requete
-

@@ -10,33 +10,20 @@ function compute_max_expiration()
     return max_expiration;
 }
 
-var Gift = function(from, to) {
-    this.from = from;
-    this.to = to;
-};
+function list(request, reply) {
+    const user = request.params.user ? encodeURIComponent(request.params.user) : 'all';
+    reply('list: ' + user);
+}
 
-Gift.prototype.give = function(reply) {
+function give(request, reply) {
+    const from = encodeURIComponent(request.payload.from);
+    const to = encodeURIComponent(request.payload.to);
     var max_expiration = compute_max_expiration();
-    var self = this;
-    db.Gifts().findAndCountAll({
-        attributes: ['id', 'expiration'],
-        where: {
-            expiration: { $and: {
-                $lte: max_expiration,
-                $gt: new Date()
-            }},
-            sender_id: self.from,
-            receiver_id: self.to
-        }
-    }).then(function(result) {
+    db.findAllGifts(from, to, max_expiration).then(function(result) {
         if (result.count == 0)
         {
             // No existing gift, we create one
-            db.Gifts().create({
-                expiration: max_expiration,
-                sender_id: self.from,
-                receiver_id: self.to
-            }).then(function(insert_res) {
+            db.createNewGift(from, to, max_expiration).then(function(insert_res) {
                 reply(insert_res.get({plain:true}));
             });
         }
@@ -46,35 +33,18 @@ Gift.prototype.give = function(reply) {
     });
 }
 
-Gift.prototype.claim = function(reply) {
+function claim(request, reply) {
+    const from = encodeURIComponent(request.payload.from);
+    const to = encodeURIComponent(request.payload.to);
     var max_expiration = compute_max_expiration();
-    var self = this;
-    db.Gifts().findAndCountAll({
-        attributes: ['id', 'expiration'],
-        where: {
-            expiration: { $and: {
-                $lte: max_expiration,
-                $gt: new Date()
-            }},
-            sender_id: self.from,
-            receiver_id: self.to
-        }
-    }).then(function(result) {
+    db.findAllGifts(from, to, max_expiration).then(function(result) {
         if (result.count == 1) // There will never be more than one gift to claim
         {
             reply(JSON.stringify(result.rows[0]));
-            db.Gifts().destroy({ // Delete gift
-                where: {
-                    expiration: { $and: {
-                        $lt: max_expiration
-                    }},
-                    sender_id: self.from,
-                    receiver_id: self.to
-                }
-            });
+            db.deleteGifts(from, to, max_expiration);
         }
         else {
-            reply('{}');
+            reply(JSON.stringify('{}'));
         }
     });
 }
@@ -82,5 +52,7 @@ Gift.prototype.claim = function(reply) {
 //TODO gatling
 //TODO test mochai chai sinon
 
-module.exports.Gift = Gift;
+module.exports.claim = claim;
+module.exports.give = give;
+module.exports.list = list;
 var exports = module.exports;

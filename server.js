@@ -4,21 +4,6 @@ const Hapi = require('hapi');
 const Joi = require('joi');
 const Gift = require('./gift.js')
 
-function handle_gift(request, reply) {
-    const from = encodeURIComponent(request.payload.from);
-    const to = encodeURIComponent(request.payload.to);
-    var gift = new Gift.Gift(from, to);
-    if (request.payload.action == 'give')
-        gift.give(reply);
-    else if (request.payload.action == 'claim')
-        gift.claim(reply);
-}
-
-function list_gifts(request, reply) {
-    const user = request.params.user ? encodeURIComponent(request.params.user) : 'all';
-    reply('list: ' + user);
-}
-
 // Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({
@@ -28,26 +13,39 @@ server.connection({
 
 server.route({
     method: 'GET',
-    path: '/gift/{user?}',
-    handler: list_gifts
+    path: '/gift/list/{user?}',
+    handler: Gift.list
 });
 
 server.route({
     method: 'POST',
-    path: '/gift',  // /claim et /give
-    handler: handle_gift,
+    path: '/gift/claim',
+    handler: Gift.claim,
     config: {
         validate: {
             payload: {
                 from: Joi.string().guid().required(),
                 to: Joi.string().guid().required(),
-                action: Joi.any().valid('claim', 'give').required()
             }
         }
     }
 });
 
-server.start((err) => {
+server.route({
+    method: 'POST',
+    path: '/gift/give',
+    handler: Gift.give,
+    config: {
+        validate: {
+            payload: {
+                from: Joi.string().guid().required(),
+                to: Joi.string().guid().required(),
+            }
+        }
+    }
+});
+
+server.start(function (err) {
     if (err) {
         throw err;
     }
