@@ -2,7 +2,7 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
-const Gift = require('./gift.js')
+const Gift = require('./gift')
 
 const server = new Hapi.Server();
 server.connection({

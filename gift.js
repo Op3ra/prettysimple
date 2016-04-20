@@ -1,17 +1,15 @@
 'use strict';
 
-const DBHandle = require('./database.js');
+const DBHandle = require('./database');
 var db = new DBHandle.DBHandle();
 
-function compute_max_expiration()
-{
+function compute_max_expiration() {
     var max_expiration = new Date();
     max_expiration.setDate(max_expiration.getDate() + 7);
     return max_expiration;
 }
 
-function newGiftAllowed(result)
-{
+function newGiftAllowed(result) {
     if (result.count == 0) return true;
 
     var latestGift = result.rows[0].get('send_date');
