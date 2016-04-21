@@ -27,6 +27,11 @@ server.route({
     path: '/gift/list',
     handler: Gift.list_all
 });
+server.route({
+    method: 'GET',
+    path: '/user/list',
+    handler: Gift.list_users // deferred from an hypothetic User module which handle users
+});
 
 // Actions
 server.route({

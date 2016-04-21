@@ -20,6 +20,15 @@ function newGiftAllowed(result) {
     return curDate > latestGift;
 }
 
+function list_users(request, reply) {
+    db.listAllUsers().then(function(result) {
+        reply(JSON.stringify(result));
+    }).catch(function(err) {
+        reply(JSON.stringify(err.message));
+        console.error(err);
+    });
+}
+
 function list_all(request, reply) {
     db.listAllGifts().then(function(result) {
         reply(JSON.stringify(result));
@@ -104,4 +113,5 @@ module.exports.give = give;
 module.exports.list_all = list_all;
 module.exports.list_from = list_from;
 module.exports.list_to = list_to;
+module.exports.list_users = list_users;
 var exports = module.exports;

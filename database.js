@@ -140,6 +140,12 @@ DBHandle.prototype.listAllGiftsTo = function(receiver) {
     });
 }
 
+DBHandle.prototype.listAllUsers = function() {
+    return User.findAll({
+        attributes: ['id', 'name']
+    });
+}
+
 DBHandle.prototype.createUser = function(username) {
     return User.create({
         id: uuid.v4(),
