@@ -23,6 +23,9 @@ function newGiftAllowed(result) {
 function list_all(request, reply) {
     db.listAllGifts().then(function(result) {
         reply(JSON.stringify(result));
+    }).catch(function(err) {
+        reply(JSON.stringify(err.message));
+        console.error(err);
     });
 }
 
@@ -30,6 +33,9 @@ function list_from(request, reply) {
     const user = encodeURIComponent(request.params.user);
     db.listAllGiftsFrom(user).then(function(result) {
         reply(JSON.stringify(result));
+    }).catch(function(err) {
+        reply(JSON.stringify(err.message));
+        console.error(err);
     });
 }
 
@@ -37,6 +43,9 @@ function list_to(request, reply) {
     const user = encodeURIComponent(request.params.user);
     db.listAllGiftsTo(user).then(function(result) {
         reply(JSON.stringify(result));
+    }).catch(function(err) {
+        reply(JSON.stringify(err.message));
+        console.error(err);
     });
 }
 
@@ -54,8 +63,8 @@ function give(request, reply) {
             db.createNewGift(from, to, max_expiration).then(function(insert_res) {
                 reply(insert_res.get({plain:true}));
             }).catch(function (err) {
-                console.err(err);
-                reply(JSON.stringify('Internal error while creating gift.'))
+                console.error(err);
+                reply(JSON.stringify(err.message));
             });
         }
         else { // We return existing gifts
@@ -63,7 +72,7 @@ function give(request, reply) {
         }
     }).catch(function(err) {
         console.error(err);
-        reply(JSON.stringify("Internal error while sending gift."));
+        reply(JSON.stringify(err.message));
     });
 }
 
@@ -78,7 +87,7 @@ function claim(request, reply) {
                 reply(JSON.stringify(result.rows[0].get({plain: true})));
             }).catch(function (err){
                 console.error(err);
-                reply(JSON.stringify('Internal error while updating gift.'))
+                reply(JSON.stringify(err));
             });
         }
         else {
@@ -86,7 +95,7 @@ function claim(request, reply) {
         }
     }).catch(function(err) {
         console.error(err);
-        reply(JSON.stringify('Internal error while claiming gift.'));
+        reply(JSON.stringify(err.message));
     });
 }
 

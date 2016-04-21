@@ -3,6 +3,7 @@
 const Sequelize = require('sequelize');
 const dbstring = 'postgres://pretty:simple@localhost/pretty';
 const uuid = require('node-uuid');
+const Promise = require('bluebird');
 
 var sequelize = new Sequelize(dbstring);
 
