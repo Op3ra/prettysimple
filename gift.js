@@ -21,21 +21,21 @@ function newGiftAllowed(result) {
 }
 
 function list_all(request, reply) {
-    db.listAllGifts().then(function (result) {
+    db.listAllGifts().then(function(result) {
         reply(JSON.stringify(result));
     });
 }
 
 function list_from(request, reply) {
     const user = encodeURIComponent(request.params.user);
-    db.listAllGiftsFrom(user).then(function (result) {
+    db.listAllGiftsFrom(user).then(function(result) {
         reply(JSON.stringify(result));
     });
 }
 
 function list_to(request, reply) {
     const user = encodeURIComponent(request.params.user);
-    db.listAllGiftsTo(user).then(function (result) {
+    db.listAllGiftsTo(user).then(function(result) {
         reply(JSON.stringify(result));
     });
 }
@@ -61,7 +61,7 @@ function give(request, reply) {
         else { // We return existing gifts
             reply('{"Existing gifts":' + JSON.stringify(result.rows) + '}');
         }
-    }).catch(function (err) {
+    }).catch(function(err) {
         console.error(err);
         reply(JSON.stringify("Internal error while sending gift."));
     });
@@ -71,7 +71,7 @@ function claim(request, reply) {
     const from = encodeURIComponent(request.payload.from);
     const to = encodeURIComponent(request.payload.to);
     var max_expiration = compute_max_expiration();
-    db.findUnclaimedGifts(from, to, max_expiration).then(function (result) {
+    db.findUnclaimedGifts(from, to, max_expiration).then(function(result) {
         if (result.count > 0) {
             // If we find several unclaimed gifts, we claim the oldest one
             db.claimGift(result.rows[0].get('id')).then(function (up_res) {
@@ -84,7 +84,7 @@ function claim(request, reply) {
         else {
             reply(JSON.stringify('No gift to claim.'));
         }
-    }).catch(function (err) {
+    }).catch(function(err) {
         console.error(err);
         reply(JSON.stringify('Internal error while claiming gift.'));
     });

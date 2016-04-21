@@ -2,7 +2,8 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
-const Gift = require('./gift')
+const Gift = require('./gift');
+const TestHelper = require('./testhelper');
 
 const server = new Hapi.Server();
 server.connection({
@@ -55,7 +56,24 @@ server.route({
     }
 });
 
-server.start(function (err) {
+
+// Access API documentation
+server.route({
+    method: 'GET',
+    path: '/doc',
+    handler: function(request, reply) {
+        reply('This is doc');
+    }
+});
+
+// Testing
+server.route({
+    method: 'GET',
+    path: '/test/create/{username}/{city}',
+    handler: TestHelper.create
+});
+
+server.start(function(err) {
     if (err) {
         throw err;
     }

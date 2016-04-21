@@ -1,7 +1,9 @@
 'use strict';
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 const dbstring = 'postgres://pretty:simple@localhost/pretty';
+const uuid = require('node-uuid');
+
 var sequelize = new Sequelize(dbstring);
 
 var User = sequelize.define('user', {
@@ -134,6 +136,21 @@ DBHandle.prototype.listAllGiftsTo = function(receiver) {
     return Gift.findAll({
         attributes: ['id', 'sender_id', 'receiver_id', 'expiration', 'claim_date'],
         where: { receiver_id: receiver }
+    });
+}
+
+DBHandle.prototype.createUser = function(username) {
+    return User.create({
+        id: uuid.v4(),
+        name: username
+    });
+}
+
+DBHandle.prototype.createCity = function(city_name, user_id) {
+    return City.create({
+        id: uuid.v4(),
+        name: city_name,
+        mayor_id: user_id
     });
 }
 
