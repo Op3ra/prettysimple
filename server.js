@@ -4,6 +4,7 @@ const Hapi = require('hapi');
 const Joi = require('joi');
 const Gift = require('./gift');
 const TestHelper = require('./testhelper');
+const fs = require('fs');
 
 const server = new Hapi.Server();
 server.connection({
@@ -15,29 +16,39 @@ server.connection({
 server.route({
     method: 'GET',
     path: '/gift/list/from/{user}',
-    handler: Gift.list_from
+    handler: function(request, reply) {
+        const user = encodeURIComponent(request.params.user);
+        Gift.list_from(user, reply);
+    }
 });
 server.route({
     method: 'GET',
     path: '/gift/list/to/{user}',
-    handler: Gift.list_to
+    handler: function(request, reply) {
+        const user = encodeURIComponent(request.params.user);
+        Gift.list_to(user, reply);
+    }
 });
 server.route({
     method: 'GET',
     path: '/gift/list',
-    handler: Gift.list_all
+    handler: function(request, reply) { Gift.list_all(reply); }
 });
 server.route({
     method: 'GET',
     path: '/user/list',
-    handler: Gift.list_users // deferred from an hypothetic User module which handle users
+    handler: function(request, reply) { Gift.list_users(reply); } // deferred to Gift from an hypothetic User module which handle users
 });
 
 // Actions
 server.route({
     method: 'POST',
     path: '/gift/claim',
-    handler: Gift.claim,
+    handler: function(request, reply) {
+        const from = encodeURIComponent(request.payload.from);
+        const to = encodeURIComponent(request.payload.to);
+        Gift.claim(from, to, reply);
+    },
     config: {
         validate: {
             payload: {
@@ -50,7 +61,11 @@ server.route({
 server.route({
     method: 'POST',
     path: '/gift/give',
-    handler: Gift.give,
+    handler: function(request, reply) {
+        const from = encodeURIComponent(request.payload.from);
+        const to = encodeURIComponent(request.payload.to);
+        Gift.give(from, to, reply);
+    },
     config: {
         validate: {
             payload: {
@@ -67,7 +82,8 @@ server.route({
     method: 'GET',
     path: '/doc',
     handler: function(request, reply) {
-        reply('This is doc');
+        var docBuf = fs.readFileSync('doc.txt', {encoding: 'UTF-8'});
+        reply('<pre>' + docBuf + '</pre>');
     }
 });
 
@@ -75,7 +91,11 @@ server.route({
 server.route({
     method: 'GET',
     path: '/test/create/{username}/{city}',
-    handler: TestHelper.create
+    handler: function(request, reply) {
+        const username = request.params.username;
+        const city = request.params.city;
+        TestHelper.create(username, city, reply);
+    }
 });
 
 server.start(function(err) {

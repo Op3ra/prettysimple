@@ -20,7 +20,7 @@ function newGiftAllowed(result) {
     return curDate > latestGift;
 }
 
-function list_users(request, reply) {
+function list_users(reply) {
     db.listAllUsers().then(function(result) {
         reply(JSON.stringify(result));
     }).catch(function(err) {
@@ -29,7 +29,7 @@ function list_users(request, reply) {
     });
 }
 
-function list_all(request, reply) {
+function list_all(reply) {
     db.listAllGifts().then(function(result) {
         reply(JSON.stringify(result));
     }).catch(function(err) {
@@ -38,8 +38,7 @@ function list_all(request, reply) {
     });
 }
 
-function list_from(request, reply) {
-    const user = encodeURIComponent(request.params.user);
+function list_from(user, reply) {
     db.listAllGiftsFrom(user).then(function(result) {
         reply(JSON.stringify(result));
     }).catch(function(err) {
@@ -48,8 +47,7 @@ function list_from(request, reply) {
     });
 }
 
-function list_to(request, reply) {
-    const user = encodeURIComponent(request.params.user);
+function list_to(user, reply) {
     db.listAllGiftsTo(user).then(function(result) {
         reply(JSON.stringify(result));
     }).catch(function(err) {
@@ -58,9 +56,7 @@ function list_to(request, reply) {
     });
 }
 
-function give(request, reply) {
-    const from = encodeURIComponent(request.payload.from);
-    const to = encodeURIComponent(request.payload.to);
+function give(from, to, reply) {
     if (from == to) {
         reply(JSON.stringify('User can\'t give a gift to him/herself.'));
         return false;
@@ -85,9 +81,7 @@ function give(request, reply) {
     });
 }
 
-function claim(request, reply) {
-    const from = encodeURIComponent(request.payload.from);
-    const to = encodeURIComponent(request.payload.to);
+function claim(from, to, reply) {
     var max_expiration = compute_max_expiration();
     db.findUnclaimedGifts(from, to, max_expiration).then(function(result) {
         if (result.count > 0) {

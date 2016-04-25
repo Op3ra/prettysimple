@@ -3,10 +3,7 @@
 const DBHandle = require('./database');
 var db = new DBHandle.DBHandle();
 
-function create(request, reply) {
-    const username = request.params.username;
-    const city = request.params.city;
-
+function create(username, city, reply) {
     var result = {};
     db.createUser(username).then(function(user_result) {
         var new_user_id = (user_result.get('id'));
