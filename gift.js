@@ -58,7 +58,7 @@ function list_to(user, reply) {
 
 function give(from, to, reply) {
     if (from == to) {
-        reply(JSON.stringify('User can\'t give a gift to him/herself.'));
+        reply('User can\'t give a gift to him/herself.');
         return false;
     }
     var max_expiration = compute_max_expiration();
@@ -69,7 +69,7 @@ function give(from, to, reply) {
                 reply(insert_res.get({plain:true}));
             }).catch(function (err) {
                 console.error(err);
-                reply(JSON.stringify(err.message));
+                reply(err.message);
             });
         }
         else { // We return existing gifts
@@ -77,7 +77,7 @@ function give(from, to, reply) {
         }
     }).catch(function(err) {
         console.error(err);
-        reply(JSON.stringify(err.message));
+        reply(err.message);
     });
 }
 
@@ -90,15 +90,15 @@ function claim(from, to, reply) {
                 reply(JSON.stringify(result.rows[0].get({plain: true})));
             }).catch(function (err){
                 console.error(err);
-                reply(JSON.stringify(err));
+                reply(err.message);
             });
         }
         else {
-            reply(JSON.stringify('No gift to claim.'));
+            reply('No gift to claim.');
         }
     }).catch(function(err) {
         console.error(err);
-        reply(JSON.stringify(err.message));
+        reply(err.message);
     });
 }
 
