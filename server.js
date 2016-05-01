@@ -5,6 +5,7 @@ const Joi = require('joi');
 const Gift = require('./gift');
 const TestHelper = require('./testhelper');
 const fs = require('fs');
+const Request = require('request');
 
 const server = new Hapi.Server();
 server.connection({
@@ -80,17 +81,27 @@ server.route({
 // Access API documentation
 server.route({
     method: 'GET',
-    path: '/doc',
+    path: '/gift/doc',
     handler: function(request, reply) {
         var docBuf = fs.readFileSync('doc.txt', {encoding: 'UTF-8'});
         reply('<pre>' + docBuf + '</pre>');
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/gift/source',
+    handler: function(request, reply) {
+        Request('https://github.com/Op3ra/prettysimple/archive/master.zip').on('response', function (file) {
+            reply(file);
+        });
+    }
+});
+
 // Testing
 server.route({
     method: 'GET',
-    path: '/test/create/{username}/{city}',
+    path: '/gift/test/create/{username}/{city}',
     handler: function(request, reply) {
         const username = request.params.username;
         const city = request.params.city;

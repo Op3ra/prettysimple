@@ -91,15 +91,21 @@ If there are several claimable gifts, the oldest one (the one with the closest e
 
 4. Other routes
 
-a. Documentation
-Route: "/doc"
+a. Test helper
+Route: "/gift/test/create/{username}/{city}"
+Method: GET
+Return: A JSON array containing two items "user"{'id', 'name'} and "city"{'id', 'name', 'mayor_id'}
+        reprensenting the newly created entries.
+
+b. Documentation
+Route: "/gift/doc"
 Method: GET
 Return: This document.
 
-b. Source code
-Route: "/source"
+c. Source code
+Route: "/gift/source"
 Method: GET
-Return: A tarball containing the source code
+Return: An archive containing the source code
 
 
 5. Dependencies
